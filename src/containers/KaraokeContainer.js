@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import Filter from '../components/Filter';
 import SongList from '../components/SongList';
 import KaraokeDisplay from '../components/KaraokeDisplay';
-import songs from '../data/songs';
+// import songs from '../data/songs';
 
-// import Lyrics from '../components/Lyrics'
 
 class KaraokeContainer extends Component {
 
@@ -12,55 +11,54 @@ class KaraokeContainer extends Component {
     super(props)
 
     this.state={
-      songs: songs,
+      songs: [],
       songSearch: '',
       filteredSongs: [],
-      selectedSong: null
+      selectedSongId: null
     }
   }
 
   componentDidMount() {
     fetch('http://localhost:4000/users/4/songs')
     .then(res => res.json())
-    .then(json => this.setState({
-      songs: json,
-      filteredSongs: json
+    .then(songData => this.setState({
+      songs: songData,
+      filteredSongs: songData
     }))
-
-  //   this.setState=({
-  //     songs: songs
-  //   },console.log(songs))
   }
 
-  handleClick = (event) => {
-    console.log('hello')
-
-    // this.setState({
-    //   selectedSong: event.target.title
-    // })
-
-    // this.
+  handleClick = (songId) => {
+    this.setState({
+      selectedSongId: songId
+      // selectedSongId: this.state.songs.find(song => song.id === songId)
+    }, () => console.log(this.state))
   }
 
-// COMMENT: Did not have time to start Song Search Filter Component
+  currentlyPlayingSong = () => {
+    return this.state.songs.find(song=>song.id === this.state.selectedSongId)
+  }
+
   handleChange = (event) => {
-    event.preventDefault()
-    this.setState=({
-      filteredSongs:
-      this.state.filteredSongs.filter(song => this.state.filteredSongs.title.includes(event.target.value))
-      })
-    }
+    let songSearch = event.target.value
+    let filtered = this.state.songs.filter(song => song.title.toLowerCase().includes(event.target.value.toLowerCase()))
+    // debugger
 
+    this.setState({
+      songSearch: songSearch,
+      filteredSongs: filtered
+    }, () => console.log('hello'))
+  }
 
 
   render() {
+    // console.log(this.state)
     return (
       <div className="karaoke-container">
         <div className="sidebar">
-          <Filter onChange={this.handleChange} />
-          <SongList songs={this.state.songs} handleClick={this.handleClick} />
+          <Filter songSearch={this.state.songSearch} handleChange={this.handleChange} />
+          <SongList songs={this.state.filteredSongs} handleClick={this.handleClick} />
         </div>
-        <KaraokeDisplay songs={this.state.filteredSongs} handleClick={this.handleClick} />
+        <KaraokeDisplay playingSongLyrics={this.currentlyPlayingSong()} />
       </div>
     );
   }

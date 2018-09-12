@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
+import React from 'react';
 
-class Filter extends Component {
-  render() {
+const Filter = (props) => {
+  // console.log("Filter props are: ", props)
+
     return (
       <div className="filter">
         <label htmlFor="title-filter">Title: </label>
-        <input id="title-filter" type="text" />
+        <input id="title-filter" type="text" onChange={props.handleChange} value={props.songSearch} />
       </div>
     );
   }
-}
 
 export default Filter;

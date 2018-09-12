@@ -1,10 +1,9 @@
 import React from 'react';
 import Song from './Song'
 
-// import KaraokeDisplay from './KaraokeDisplay'
 
 const SongList = (props) => {
-
+  // console.log('songlist props', props)
 
   const mappedSongs = props.songs.map(song => <Song key={song.id} song={song} handleClick={props.handleClick} />)
 
